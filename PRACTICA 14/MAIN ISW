@@ -1,0 +1,79 @@
+from modelos.cursos import agregarCursos, ModificarCurso
+from modelos.alumnos import agregarAlumno
+
+def menu():
+    cursos = {}
+
+    while True:
+        print("""
+
+********* ACADEMIA DE INGENIERÍA EN SOFTWARE *********
+1. Agregar curso
+2. Agregar Alumno
+3. Modificar curso
+4. Dar de baja
+5. Mostrar listado de alumnos
+6. Salir
+""")
+
+        opcion = input("Seleccione una opción: ")
+
+        if opcion == "1":
+            nombre = input("Nombre de tu curso nuevo: ")
+            cursonuevo = agregarCursos()
+            cursos[nombre] = cursonuevo
+
+        elif opcion == "2":
+            idAlumno = input("Dame el id del alumno: ")
+            nuevoAlumno = agregarAlumno()
+            
+            if not cursos:
+                print("No hay cursos disponibles, agrega uno primero.\n")
+                continue
+            nombre_curso = input("¿A qué curso deseas agregar al alumno?: ")
+            if nombre_curso in cursos:
+                cursos[nombre_curso]["Alumnos"][idAlumno] = nuevoAlumno
+            else:
+                print("Ese curso no existe.\n")
+
+        elif opcion == "3":
+            if not cursos:
+                print("No hay cursos para modificar.\n")
+                continue
+            nombre_curso = input("Nombre del curso a modificar: ")
+            if nombre_curso in cursos:
+                cursos[nombre_curso] = ModificarCurso(cursos[nombre_curso])
+            else:
+                print("Ese curso no existe.\n")
+
+        elif opcion == "4":
+            nombre_curso = input("Nombre del curso a eliminar: ")
+            if nombre_curso in cursos:
+                del cursos[nombre_curso]
+                print(f" Curso '{nombre_curso}' eliminado.\n")
+            else:
+                print("Curso no encontrado.\n")
+
+        elif opcion == "5":
+            if not cursos:
+                print("No hay cursos registrados.\n")
+            else:
+                for nombre, datos in cursos.items():
+                    print(f"\n Curso: {nombre}")
+                    print(" Instructor:", datos["instructor"]["nombre"])
+                    print("Alumnos:")
+                    if datos["Alumnos"]:
+                        for id_alumno, info in datos["Alumnos"].items():
+                            print(f"   ID: {id_alumno} - Nombre: {info['Alumno']['nombre']}")
+                    else:
+                        print("   (Sin alumnos registrados)")
+
+        elif opcion == "6":
+            print("Saliendo del sistema...")
+            break
+
+        else:
+            print(" Opción no válida\n")
+
+if __name__ == "__main__":
+    menu()
